@@ -23,7 +23,8 @@ export const RegisterScreen = () => {
 
     try {
       await register(email, password, displayName, phone)
-      navigate('/profile-setup')
+      // After creating account, take users to the registration page to continue with tickets
+      navigate('/register')
     } catch (err) {
       setError(err.message || 'Registration failed')
     } finally {

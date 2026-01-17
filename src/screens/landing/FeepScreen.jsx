@@ -1,55 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppHeader } from '../../components/AppHeader'
+import { useAuthStore } from '../../store/authStore'
 
-// Excel-friendly data structure - can be populated from CSV/Excel
-const EVENTS_DATA = {
-  featured: {
-    id: 'feep-2026',
-    title: "FEEP Conference 2026",
-    subtitle: "The Future of Events & Experiences",
-    date: "January 13-15, 2026",
-    location: "San Francisco, CA",
-    time: "9:00 AM - 6:00 PM",
-    image: "🎪",
-    attendees: 2500,
-    speakers: 85,
-    tracks: ["Technology", "Design", "Business", "Innovation"],
-    description: "Join us for the most anticipated event of 2026. Connect with industry leaders, discover breakthrough ideas, and network with innovators.",
-    status: "active", // active, coming-soon, ended
-    registered: false,
+const programs = [
+  {
+    title: "The Practitioner's Pod",
+    description: "A place for practitioners of experiential education to get better at running activities",
+    image: "🎯"
+  },
+  {
+    title: "The Storytellers Playbook",
+    description: "Learn to be a better storyteller and enhance your skills for lasting impact.",
+    image: "📖"
   }
-}
-
-const UPCOMING_EVENTS = [
-  { id: 1, title: "AI Summit 2026", date: "March 2026", location: "TBD", status: "coming-soon" },
-  { id: 2, title: "Design Week 2026", date: "April 2026", location: "TBD", status: "coming-soon" },
-  { id: 3, title: "Tech Expo 2026", date: "May 2026", location: "TBD", status: "coming-soon" },
-]
-
-const CELEBRITIES = [
-  { id: 1, name: "Speaker TBA", image: "🎤", genre: "Coming Soon", status: "coming-soon" },
-  { id: 2, name: "Speaker TBA", image: "🎵", genre: "Coming Soon", status: "coming-soon" },
-  { id: 3, name: "Speaker TBA", image: "🎶", genre: "Coming Soon", status: "coming-soon" },
 ]
 
 export const FeepScreen = () => {
   const navigate = useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [showLoginModal, setShowLoginModal] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const mainEvent = EVENTS_DATA.featured
-
-  const handleLogin = (e) => {
-    e.preventDefault()
-    if (email && password) {
-      setIsLoggedIn(true)
-      setShowLoginModal(false)
-      setEmail('')
-      setPassword('')
-    }
-  }
+  const user = useAuthStore((state) => state.user)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white">
@@ -60,218 +29,173 @@ export const FeepScreen = () => {
         <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-tl from-orange-500 to-red-600 opacity-5 rounded-full blur-3xl" />
       </div>
 
-      {/* Login Modal */}
-      {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-gradient-to-br from-[#1e293b] to-[#0f172a] border border-white/10 rounded-3xl p-8 w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-6">Sign In to FEEP</h2>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold mb-2">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[#6366f1]/50"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[#6366f1]/50"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#4f46e5] hover:to-[#7c3aed] text-white font-bold rounded-xl transition-all duration-300 mt-6"
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowLoginModal(false)}
-                className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-all duration-300"
-              >
-                Cancel
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      <div className="relative z-10 pt-20">
+      <div className="relative z-10">
         {/* Header */}
-        <AppHeader 
-          isLoggedIn={isLoggedIn} 
-          onLogout={() => setIsLoggedIn(false)}
-        />
+        <AppHeader isLoggedIn={!!user} />
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
-          {/* Featured Event - FEEP Conference */}
-          <div className="mb-16">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Left: Event Image & Info */}
-              <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                <div className="inline-block mb-4">
-                  <span className="px-4 py-2 rounded-full bg-gradient-to-r from-[#6366f1]/20 to-[#8b5cf6]/20 border border-[#6366f1]/30 text-[#a78bfa] text-sm font-semibold">
-                    ✨ Featured Event
-                  </span>
+        {/* Hero Section */}
+        <div className="max-w-6xl mx-auto px-6 py-20">
+          <div className="text-center mb-16">
+            <h1 className="text-6xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-[#a78bfa] to-[#6366f1] bg-clip-text text-transparent">
+              WE DREAM
+            </h1>
+            <div className="max-w-4xl mx-auto space-y-6 text-lg text-white/80 leading-relaxed">
+              <p>
+                Imagine a world where every educator and learner is actively engaged, nourished,
+                and empowered to grow, express themselves authentically, and thrive through
+                meaningful experiences. Integrating experiential learning into educational spaces
+                is a powerful way to turn this vision into reality.
+              </p>
+              <p>
+                FEEP is designed as a shared space—where ideas, tools, and resources can spark
+                inspiration and support anyone exploring experiential approaches in education.
+                The intention is not to provide answers, but to walk together in discovery,
+                learning from one another while trying new possibilities.
+              </p>
+              <p>
+                We offer programs, and organize events to foster a supportive community,
+                facilitate sharing of experiences, and grow together in this exciting journey toward
+                experiential education.
+              </p>
+            </div>
+          </div>
+
+          {/* Mission Section */}
+          <div className="mb-20">
+            <div className="bg-gradient-to-br from-[#1e293b] to-[#0f172a] border border-white/10 rounded-3xl p-12 backdrop-blur-sm">
+              <h2 className="text-4xl font-black mb-8 text-center">
+                EXPERIENTIAL EDUCATION TO SUPPORT EDUCATORS
+              </h2>
+              <div className="grid md:grid-cols-3 gap-8 text-center">
+                <div className="space-y-3">
+                  <div className="text-5xl">🎓</div>
+                  <h3 className="text-xl font-bold text-[#a78bfa]">Learn</h3>
+                  <p className="text-white/70">
+                    Discover new approaches to education through hands-on experiences
+                  </p>
                 </div>
-                <h1 className="text-5xl md:text-6xl font-black leading-tight mb-4">
-                  {mainEvent.title}
-                </h1>
-                <p className="text-lg text-white/70 mb-6 max-w-lg">
-                  {mainEvent.description}
+                <div className="space-y-3">
+                  <div className="text-5xl">🤝</div>
+                  <h3 className="text-xl font-bold text-[#a78bfa]">Connect</h3>
+                  <p className="text-white/70">
+                    Build relationships with fellow practitioners and educators
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <div className="text-5xl">🌱</div>
+                  <h3 className="text-xl font-bold text-[#a78bfa]">Grow</h3>
+                  <p className="text-white/70">
+                    Develop your practice and create lasting impact
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Current Programs */}
+          <div className="mb-20">
+            <h2 className="text-4xl font-black mb-10 text-center">Current Programs</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              {programs.map((program, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gradient-to-br from-[#1e293b] to-[#0f172a] border border-white/10 rounded-3xl p-8 backdrop-blur-sm hover:border-[#6366f1]/50 transition-all duration-300"
+                >
+                  <div className="text-6xl mb-6">{program.image}</div>
+                  <h3 className="text-2xl font-bold mb-4 text-[#a78bfa]">{program.title}</h3>
+                  <p className="text-white/70 leading-relaxed">{program.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* About Foundation EEP */}
+          <div className="mb-20">
+            <div className="bg-gradient-to-br from-[#6366f1]/10 to-[#8b5cf6]/10 border border-[#6366f1]/30 rounded-3xl p-12 backdrop-blur-sm">
+              <h2 className="text-3xl font-black mb-6 text-center">About Foundation EEP</h2>
+              <div className="max-w-3xl mx-auto space-y-4 text-white/80 leading-relaxed">
+                <p>
+                  Foundation for Experiential Education and Practices (FoundationEEP) is a non-profit 
+                  organization dedicated to promoting experiential education and practices in India.
                 </p>
-
-                {/* Event Details */}
-                <div className="grid grid-cols-2 gap-6 mb-8 w-full md:w-auto">
-                  <div>
-                    <p className="text-xs text-white/50 uppercase tracking-wide mb-1">Date</p>
-                    <p className="text-lg font-bold">{mainEvent.date}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-white/50 uppercase tracking-wide mb-1">Location</p>
-                    <p className="text-lg font-bold">{mainEvent.location}</p>
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="flex gap-6 mb-8 w-full justify-center md:justify-start">
-                  <div>
-                    <p className="text-2xl font-black text-[#a78bfa]">{mainEvent.attendees}+</p>
-                    <p className="text-xs text-white/60">Attendees</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-black text-[#a78bfa]">{mainEvent.speakers}</p>
-                    <p className="text-xs text-white/60">Speakers</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-black text-[#a78bfa]">{mainEvent.tracks.length}</p>
-                    <p className="text-xs text-white/60">Tracks</p>
-                  </div>
-                </div>
-
-                {/* Tracks */}
-                <div className="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
-                  {mainEvent.tracks.map((track, idx) => (
-                    <span key={idx} className="px-3 py-1 rounded-full bg-[#6366f1]/20 text-[#a78bfa] text-xs font-semibold">
-                      {track}
-                    </span>
-                  ))}
-                </div>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                  {isLoggedIn ? (
-                    <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
-                      View Event Details →
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => navigate('/signup')}
-                      className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                    >
-                      Register for FEEP 2026 →
-                    </button>
-                  )}
-                  <button className="px-8 py-4 border border-white/20 hover:border-white/40 text-white font-bold rounded-xl transition-all duration-300 bg-white/5 hover:bg-white/10" onClick={() => navigate('/conference-details')}>
-                    Learn More
-                  </button>
-                </div>
-              </div>
-
-              {/* Right: Event Hero Image */}
-              <div className="relative">
-                <div className="w-full aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-orange-500/20 via-red-600/20 to-[#334155] border border-orange-500/30 flex items-center justify-center text-9xl">
-                  {mainEvent.image}
-                </div>
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/40 to-transparent" />
+                <p className="text-center text-sm text-white/60 mt-8">
+                  Foundation for Experiential Education and Practices<br />
+                  1, Gulmohar Apartments, Vardayani Society, Pashan Sus Road<br />
+                  Pune - 411021<br />
+                  GSTIN: 27AAFCF8936N1ZW
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Coming Soon Events */}
-          <div>
-            <h2 className="text-4xl font-bold mb-8">What's Coming Next</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {UPCOMING_EVENTS.map(event => (
-                <ComingSoonCard key={event.id} event={event} />
-              ))}
-            </div>
-          </div>
-
-          {/* Coming Soon Speakers */}
-          <div className="mt-16">
-            <h2 className="text-4xl font-bold mb-8">Featured Speakers (Coming Soon)</h2>
-            <div className="flex gap-4 overflow-x-auto pb-4">
-              {CELEBRITIES.map(celeb => (
-                <div key={celeb.id} className="flex-shrink-0 text-center">
-                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-white/10 to-white/5 border-2 border-white/20 flex items-center justify-center text-5xl opacity-50 mb-3">
-                    {celeb.image}
-                  </div>
-                  <p className="text-sm font-semibold">{celeb.name}</p>
-                  <p className="text-xs text-white/50">{celeb.genre}</p>
-                </div>
-              ))}
+          {/* CTA Section */}
+          <div className="text-center">
+            <h2 className="text-3xl font-black mb-6">Join Us at the Conference</h2>
+            <p className="text-white/70 mb-8 max-w-2xl mx-auto">
+              Be part of India's premier experiential education conference. Connect with educators, 
+              practitioners, and thought leaders from across the country.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button
+                onClick={() => navigate('/conference-details')}
+                className="px-8 py-4 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#4f46e5] hover:to-[#7c3aed] text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-[#6366f1]/50"
+              >
+                View Conference Details
+              </button>
+              <button
+                onClick={() => navigate('/')}
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-all duration-300"
+              >
+                Back to Home
+              </button>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="max-w-7xl mx-auto px-6 md:px-12 py-12 border-t border-white/10 mt-20">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h4 className="font-bold mb-4">FEEP</h4>
-              <p className="text-white/60 text-sm">The premier event platform for discovering and attending world-class conferences.</p>
+        <footer className="relative z-10 border-t border-white/10 mt-20">
+          <div className="max-w-6xl mx-auto px-6 py-12">
+            <div className="grid md:grid-cols-3 gap-8 text-center md:text-left">
+              <div>
+                <h3 className="font-bold mb-4 text-[#a78bfa]">Quick Links</h3>
+                <div className="space-y-2 text-sm text-white/60">
+                  <button onClick={() => navigate('/')} className="block hover:text-white transition-colors">Home</button>
+                  <button onClick={() => navigate('/conference-details')} className="block hover:text-white transition-colors">Conference Details</button>
+                  <button onClick={() => navigate('/login')} className="block hover:text-white transition-colors">Sign In</button>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-bold mb-4 text-[#a78bfa]">Programs</h3>
+                <div className="space-y-2 text-sm text-white/60">
+                  <p>The Practitioner's Pod</p>
+                  <p>The Storytellers Playbook</p>
+                  <p>Annual Conference</p>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-bold mb-4 text-[#a78bfa]">Connect</h3>
+                <div className="space-y-2 text-sm text-white/60">
+                  <p>Pune, Maharashtra</p>
+                  <p>India</p>
+                  <a 
+                    href="https://www.foundationeep.org" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block hover:text-white transition-colors"
+                  >
+                    www.foundationeep.org
+                  </a>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="font-bold mb-4">Event</h4>
-              <ul className="space-y-2 text-white/60 text-sm">
-                <li><a href="#" className="hover:text-white transition">Schedule</a></li>
-                <li><a href="#" className="hover:text-white transition">Speakers</a></li>
-              </ul>
+            <div className="text-center text-sm text-white/40 mt-8 pt-8 border-t border-white/10">
+              © 2026 Foundation for Experiential Education and Practices. All rights reserved.
             </div>
-            <div>
-              <h4 className="font-bold mb-4">Support</h4>
-              <ul className="space-y-2 text-white/60 text-sm">
-                <li><a href="#" className="hover:text-white transition">FAQ</a></li>
-                <li><a href="#" className="hover:text-white transition">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Legal</h4>
-              <ul className="space-y-2 text-white/60 text-sm">
-                <li><a href="#" className="hover:text-white transition">Privacy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-8 text-center text-white/50 text-sm">
-            <p>&copy; 2026 FEEP Conference. All rights reserved.</p>
           </div>
         </footer>
       </div>
     </div>
   )
 }
-
-const ComingSoonCard = ({ event }) => (
-  <div className="p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/0 border border-white/10 text-center opacity-60 hover:opacity-80 transition-opacity">
-    <div className="text-5xl mb-4">🔜</div>
-    <h3 className="text-lg font-bold mb-2">{event.title}</h3>
-    <p className="text-sm text-white/60 mb-3">{event.date}</p>
-    <p className="text-xs text-white/50">{event.location}</p>
-    <div className="mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-white/70">
-      Coming Soon
-    </div>
-  </div>
-)
 
 export default FeepScreen

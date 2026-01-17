@@ -8,7 +8,7 @@ export const AppHeader = ({ isLoggedIn, onLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navigationItems = [
-    { label: 'About Us', href: '#about' },
+    { label: 'About Us', href: '/feep-2026' },
     { label: 'Education', href: '#education' },
     {
       label: 'Conferences',
@@ -106,7 +106,7 @@ export const AppHeader = ({ isLoggedIn, onLogout }) => {
 
           {/* Sign In button */}
           <button
-            onClick={isLoggedIn ? onLogout : () => navigate('/signup')}
+            onClick={isLoggedIn ? onLogout : () => navigate('/login')}
             className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#c17757] to-[#a05a3a] hover:from-[#d4845f] hover:to-[#b86b47] text-white font-medium transition-all duration-300 flex-shrink-0 text-sm"
           >
             {isLoggedIn ? 'Sign Out' : 'Sign In'}

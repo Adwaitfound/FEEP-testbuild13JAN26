@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { onAuthChange, signUp, signIn, logOut } from '../services/firebase/auth'
-import { createUserProfile } from '../services/firebase/firestore'
+import { onAuthChange, signUp, signIn, logOut, resetPassword as sendReset } from '../services/firebase/auth'
+import { createUserProfile, isEmailAllowed } from '../services/firebase/firestore'
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -43,9 +43,28 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     try {
       set({ loading: true, error: null })
+      const allowed = await isEmailAllowed(email)
+      if (!allowed) {
+        throw new Error('This email is not registered for this event. Please contact support.')
+      }
       const userCredential = await signIn(email, password)
       set({ user: userCredential.user, loading: false })
       return userCredential.user
+    } catch (error) {
+      set({ error: error.message, loading: false })
+      throw error
+    }
+  },
+
+  requestPasswordReset: async (email) => {
+    try {
+      set({ loading: true, error: null })
+      const allowed = await isEmailAllowed(email)
+      if (!allowed) {
+        throw new Error('This email is not registered for this event. Please contact support.')
+      }
+      await sendReset(email)
+      set({ loading: false })
     } catch (error) {
       set({ error: error.message, loading: false })
       throw error

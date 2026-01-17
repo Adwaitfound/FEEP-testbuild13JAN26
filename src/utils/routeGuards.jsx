@@ -20,10 +20,9 @@ export const PrivateRoute = ({ children }) => {
 }
 
 export const PublicRoute = ({ children }) => {
-  const user = useAuthStore((state) => state.user)
   const loading = useAuthStore((state) => state.loading)
 
   if (loading) return <Loading />
 
-  return user ? <Navigate to="/home" /> : children
+  return children
 }

@@ -18,6 +18,9 @@ import {
 } from 'firebase/firestore'
 import { db } from './config'
 
+// Normalize email for lookups
+const normalizeEmail = (email) => email?.trim().toLowerCase()
+
 export const createDocument = async (collectionName, data, docId = null) => {
   try {
     const timestamp = serverTimestamp()
@@ -205,6 +208,16 @@ export const registerForSession = async (userId, sessionId) => {
     console.error('Register for session error:', error)
     throw error
   }
+}
+
+// Allowlist lookup for pre-registered attendees
+export const isEmailAllowed = async (email) => {
+  const normalized = normalizeEmail(email)
+  if (!normalized) return false
+
+  const allowedRef = doc(db, 'allowedEmails', normalized)
+  const allowedSnap = await getDoc(allowedRef)
+  return allowedSnap.exists()
 }
 
 export const unregisterFromSession = async (userId, sessionId) => {

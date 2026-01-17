@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Load service account
-const serviceAccountPath = path.join(__dirname, '..', 'serviceAccountKey.json')
+const serviceAccountPath = path.join(__dirname, '..', 'serviceAccountKey-new.json')
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'))
 
 admin.initializeApp({

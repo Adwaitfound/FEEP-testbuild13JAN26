@@ -146,6 +146,13 @@ export const RegistrationScreen = () => {
                     Register via Easebuzz →
                   </a>
 
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="block w-full px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-all duration-300 text-center text-sm"
+                  >
+                    I have already registered
+                  </button>
+
                   <a
                     href={REGISTRATION_DATA.conferenceTicket.accommodation}
                     target="_blank"

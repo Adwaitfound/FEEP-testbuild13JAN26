@@ -2,62 +2,67 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AppProvider } from './context/AppProvider'
 import { PrivateRoute, PublicRoute } from './utils/routeGuards'
-import { Layout } from './components/Layout'
 import { LoginScreen } from './screens/auth/LoginScreen'
 import { RegisterScreen } from './screens/auth/RegisterScreen'
 import { ProfileSetupScreen } from './screens/auth/ProfileSetupScreen'
+import { DashboardScreen } from './screens/home/DashboardScreen'
 import { ScheduleScreen } from './screens/schedule/ScheduleScreen'
 import { ProfileScreen } from './screens/profile/ProfileScreen'
 import { SpeakersListScreen } from './screens/speakers/SpeakersListScreen'
 import { EventInfoScreen } from './screens/info/EventInfoScreen'
 import { ParticipantsScreen } from './screens/networking/ParticipantsScreen'
-import { HomeScreen } from './screens/home/HomeScreen'
 import AllEventsScreen from './screens/landing/AllEventsScreen'
 import FeepScreen from './screens/landing/FeepScreen'
 import SignupGatewayScreen from './screens/landing/SignupGatewayScreen'
 import { ConferenceDetailsScreen } from './screens/landing/ConferenceDetailsScreen'
 import { RegistrationScreen } from './screens/landing/RegistrationScreen'
 
-const HomeScreenWrapper = () => (
-  <Layout>
-    <HomeScreen />
-  </Layout>
-)
+const DashboardWrapper = () => <DashboardScreen />
 
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppProvider>
         <Routes>
-          {/* Public Routes */}
+          {/* Landing page - root for unauthenticated users */}
           <Route
             path="/"
             element={
-              <AllEventsScreen />
+              <PublicRoute>
+                <AllEventsScreen />
+              </PublicRoute>
             }
           />
           <Route
             path="/feep-2026"
             element={
-              <FeepScreen />
+              <PublicRoute>
+                <FeepScreen />
+              </PublicRoute>
             }
           />
           <Route
             path="/signup"
             element={
-              <SignupGatewayScreen />
+              <PublicRoute>
+                <SignupGatewayScreen />
+              </PublicRoute>
             }
           />
           <Route
             path="/conference-details"
             element={
-              <ConferenceDetailsScreen />
+              <PublicRoute>
+                <ConferenceDetailsScreen />
+              </PublicRoute>
             }
           />
           <Route
             path="/register"
             element={
-              <RegistrationScreen />
+              <PublicRoute>
+                <RegistrationScreen />
+              </PublicRoute>
             }
           />
           <Route
@@ -69,7 +74,7 @@ function App() {
             }
           />
           <Route
-            path="/register"
+            path="/auth/register"
             element={
               <PublicRoute>
                 <RegisterScreen />
@@ -85,12 +90,12 @@ function App() {
             }
           />
 
-          {/* Private Routes */}
+          {/* Private Routes - Main Dashboard */}
           <Route
             path="/home"
             element={
               <PrivateRoute>
-                <HomeScreenWrapper />
+                <DashboardWrapper />
               </PrivateRoute>
             }
           />
@@ -98,9 +103,7 @@ function App() {
             path="/schedule"
             element={
               <PrivateRoute>
-                <Layout>
-                  <ScheduleScreen />
-                </Layout>
+                <ScheduleScreen />
               </PrivateRoute>
             }
           />
@@ -108,9 +111,15 @@ function App() {
             path="/speakers"
             element={
               <PrivateRoute>
-                <Layout>
-                  <SpeakersListScreen />
-                </Layout>
+                <SpeakersListScreen />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/participants"
+            element={
+              <PrivateRoute>
+                <ParticipantsScreen />
               </PrivateRoute>
             }
           />
@@ -118,9 +127,7 @@ function App() {
             path="/networking"
             element={
               <PrivateRoute>
-                <Layout>
-                  <ParticipantsScreen />
-                </Layout>
+                <ParticipantsScreen />
               </PrivateRoute>
             }
           />
@@ -128,9 +135,7 @@ function App() {
             path="/event-info"
             element={
               <PrivateRoute>
-                <Layout>
-                  <EventInfoScreen />
-                </Layout>
+                <EventInfoScreen />
               </PrivateRoute>
             }
           />
@@ -138,13 +143,11 @@ function App() {
             path="/profile"
             element={
               <PrivateRoute>
-                <Layout>
-                  <ProfileScreen />
-                </Layout>
+                <ProfileScreen />
               </PrivateRoute>
             }
           />
-          {/* Redirect unknown routes */}
+          {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </AppProvider>
