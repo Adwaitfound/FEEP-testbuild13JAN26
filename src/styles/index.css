@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Sinline inspired - Purple, lavender with dark navy background */
+  --brand-bg: #0f172a;
+  --brand-surface: #1e293b;
+  --brand-surface-2: #334155;
+  --brand-primary: #6366f1; /* Indigo */
+  --brand-secondary: #8b5cf6; /* Violet */
+  --brand-accent: #a78bfa; /* Lavender */
+  --brand-border: #475569;
+  --brand-text: #ffffff;
+  --brand-muted: #94a3b8;
+  --brand-light-bg: #f3f0ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  letter-spacing: -0.5px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+}
